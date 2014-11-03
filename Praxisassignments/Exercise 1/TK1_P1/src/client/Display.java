@@ -105,7 +105,7 @@ public class Display extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getX() > Display.this.flyPosition[0] && e.getX() < Display.this.flyPosition[0] + Display.this.img.getWidth(null)
 						&& e.getY() > Display.this.flyPosition[1] && e.getY() < Display.this.flyPosition[1] + Display.this.img.getHeight(null)) {
-
+					client.
 				}
 			}
 		});

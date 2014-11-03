@@ -13,6 +13,8 @@ public class Client implements IGameClient {
 
 	private Display display;
 
+	private int flyID;
+
 	private ConcurrentHashMap<String, Integer> players;
 
 	public Client(String url, int port) {
@@ -27,7 +29,8 @@ public class Client implements IGameClient {
 	}
 
 	@Override
-	public void recieveFlyPosition(final int x, final int y) throws RemoteException {
+	public void recieveFlyPosition(final int x, final int y, int flyID) throws RemoteException {
+		this.flyID = flyID;
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
@@ -49,6 +52,10 @@ public class Client implements IGameClient {
 	public void recievePlayerLeft(String playerName) throws RemoteException {
 		this.players.remove(playerName);
 		rebuildDisplay();
+	}
+
+	public void notifyFlyCatched() {
+
 	}
 
 	private void rebuildDisplay() {
