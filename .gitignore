@@ -1,0 +1,8 @@
+#Tex-Related
+*.aux
+*.log
+*.synctex.gz
+*.bak
+
+#Java-related
+*.class

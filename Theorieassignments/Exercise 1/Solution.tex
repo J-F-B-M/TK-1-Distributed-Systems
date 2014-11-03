@@ -1,0 +1,36 @@
+\documentclass{tudexercise}
+
+\usepackage[english]{babel}
+
+\begin{document}
+	\section{Three problems of distributed systems}
+		\begin{itemize}
+			\item	The global state is not accessible. Any received state can (and probably is) already outdated (without great synchronization effort).
+			\item	The clocks of multiple autonomous systems are generally not synchronized. This makes it difficult to determine the order in which Events happened.
+			\item	Indeterminism: Distributed Systems often suffer from Race Conditions and similar problems.
+		\end{itemize}
+		
+	\section{Abstraction Levels}
+		\begin{itemize}
+			\item \textbf{Physical Configuration}		The physical configuration describes the direct wiring and configuration of the network.
+			\item \textbf{Logical Configuration} 
+			\item \textbf{Logical Distribution}			
+			\item \textbf{Distributed Algorithm}			
+		\end{itemize}
+	\section{Transparency}
+		
+		\begin{itemize}
+			\item	
+			\item	
+			\item	
+			\item	
+		\end{itemize}
+	\section{Programming Abstractions}
+		\begin{itemize}
+			\item \textbf{Distributed operating system approach} In this approach the operating system is usually scattered over several, physically distinct nodes. Each node runs a Mikrokernel that controls the nodes hardware, and a collection of higher-level software that (in combination with other nodes) finally result in a complete Operating System. This is quite general and allows/requires parallel programming, but needs a wide-scale adoption of the same system, which is generally not given.
+			\item \textbf{Distributed database approach} In this approach each node runs it own processes, but accesses a globally accessible Database (which may itself be distributed and managed by a Database Management System). This allows for isolated sequential programs which are generally easier to maintain, but also can cause problems when two independent programs access the shared database. This problem can somewhat be countered with a good DBMMS. Another problem that a lot of distributed algorithms simply don't fit this kind of structure, making them hard to properly realize.
+			\item \textbf{Protocol approach for dedicated Purposes} By agreeing to standardized protocols independent programs can communicate freely with any other corresponding program, but is limited to a very basic subset of functionalities. This however is a common problem of standards and not only of this approach.
+			\item \textbf{Distributed Programming Language approach} Because the DRTS is directly connected to the language used, this kind of systems is usually more efficient in solving distributed tasks, but has the problem of being inefficient in regards to handling different OS. This is a typical trade-off-situation. Because there is not the ultimate solution, many different approaches (speak languages) exist, which is good, because there probably exist a good language for a given problem, but (nearly) every language needs its own Middleware. 
+		\end{itemize}
+		
+\end{document}
