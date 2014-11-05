@@ -4,10 +4,24 @@
 
 \begin{document}
 	\section{RPC Failure Semantics}
+		\begin{itemize}
+			\item \textbf{Message} The message has to hold an unique ID, by which it can be identified. If a message is resend, it will maintain its ID until it is disposed by client and server, in which case the whole message is gone.
+			\item \textbf{Client} The client has to hold a buffer containing the message until it (the client) received answer from the server. The client resends the message every \textit{timeout} seconds. As soon as the client receives the answer from the server, he can dispose the message stored.
+			\item \textbf{Server} The server has to hold a buffer containing the IDs of all received messages. If the server receives a message with an unknown ID, the ID is added to the buffer and the message processed. If the server receives a message with an ID he already has in its buffer, he simply disposes the message.
+		\end{itemize}
 		
+		While this is sufficient to ensure \textit{At-Most-Once}, one should note that the server should forget every ID after some time. Otherwise, due to the amount of IDs being limited, he will receive a message with an ID he has already seen, but with different content. This would be disposed, even though it should be processed. This would however still satisfy \textit{At-Most-Once}, as the message is 0 times (which is <=1) processed.
 		
-	\section{Mashalling}
-		
+	\section{Marshalling}
+		\begin{itemize}
+			\item \textbf{Definition} Marshalling describes the process of converting complex data (for example objects containing objects or objects in general) into a more simple data format like a byte-sequence. Often, data is lost in the presentation and needs to be supplied from the outside. In the CORBA CDR, all type information and order is lost, a receiving process needs to know it already to reassemble the represented complex data.
+			\item \textbf{CORBA}
+				\begin{itemize}
+					Explicit typing is not required in CORBA, as both sides know what the object transmitted is composed of and in what order this composition has to be done.
+					\item \textbf{Advantages} The representation is small. As half the data (Types) is omitted, messages are faster transmitted and use less bandwidth. Another advantage that the format is simple, meaning that 
+					\item \textbf{Disadvantages}
+				\end{itemize}
+		\end{itemize}
 		
 	\section{Request-Reply Protocol}
 		
