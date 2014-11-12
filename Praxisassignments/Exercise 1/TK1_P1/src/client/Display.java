@@ -3,11 +3,14 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
@@ -60,7 +63,7 @@ public class Display extends JFrame {
 	 * @throws IOException
 	 */
 	public Display() throws IOException {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,6 +73,13 @@ public class Display extends JFrame {
 		this.lock = new ReentrantLock();
 		this.flyPosition = new int[2];
 		this.img = ImageIO.read(new File("." + File.pathSeparator + "fliege-t20678.jpg"));
+
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Display.this.client.shutdown();
+			}
+		});
 
 		add(generateLeftPane(), BorderLayout.WEST);
 		add(generateMainPane(), BorderLayout.CENTER);
@@ -100,12 +110,14 @@ public class Display extends JFrame {
 			}
 		};
 
+		drawingCanvas.setPreferredSize(new Dimension(300, 300));
+
 		drawingCanvas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getX() > Display.this.flyPosition[0] && e.getX() < Display.this.flyPosition[0] + Display.this.img.getWidth(null)
 						&& e.getY() > Display.this.flyPosition[1] && e.getY() < Display.this.flyPosition[1] + Display.this.img.getHeight(null)) {
-					client.
+					Display.this.client.notifyFlyCatched();
 				}
 			}
 		});

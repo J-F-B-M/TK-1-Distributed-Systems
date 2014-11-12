@@ -1,7 +1,5 @@
 package impl;
 
-import impl.exception.PlayerAlreadyExistsException;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -15,10 +13,9 @@ public interface IGameServer extends Remote {
 	 * 
 	 * @param playerName
 	 *            The name by which the player wants to be recognized.
-	 * @param client
 	 * @throws RemoteException
 	 */
-	void login(String playerName, IGameClient client) throws RemoteException, PlayerAlreadyExistsException;
+	void login(String playerName, IGameClient client) throws RemoteException;
 
 	/**
 	 * Disconnects a player from the game. This method should notify all connected players of this disconnect, so they can update their displays.
@@ -45,8 +42,8 @@ public interface IGameServer extends Remote {
 	 * Returns all currently connected players together with their points, in a form suitable for a {@link JTable}. This method is especially for clients
 	 * joining late. Normally clients should update themselves when being notified.
 	 * 
-	 * @return
+	 * @return An object[][] which contains mappings in the form of object[x] = {String,Integer}
 	 */
-	String[][] getPlayers();
+	Object[][] getPlayers();
 
 }
