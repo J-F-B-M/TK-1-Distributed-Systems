@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
-import java.util.LinkedList;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Client implements IGameClient {
@@ -30,40 +29,47 @@ public class Client implements IGameClient {
 	// ---------------------------------------------------------
 	// ---------------------------------------------------------
 
-	private Display display;
+	transient Display										display;
 
-	private int flyID;
+	private transient int									flyID;
 
-	private ConcurrentHashMap<String, Integer> players;
+	private transient ConcurrentHashMap<String, Integer>	players;
 
-	private IGameServer server;
+	private transient IGameServer							server;
 
-	private String playerName;
+	private transient String								playerName;
 
-	public Client(String playerName, String url, int port) {
+	@SuppressWarnings("deprecation")
+	public Client(String playerName, String url, int port) throws RemoteException {
+		UnicastRemoteObject.exportObject(this, 0);
+
 		this.players = new ConcurrentHashMap<>();
 		this.playerName = playerName;
 
-		try {
-			if (System.getSecurityManager() == null) {
-				System.setSecurityManager(new RMISecurityManager());
-			}
-
-			EventQueue.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// It *should* be safe to initialize the display at an unknow point in the future. As it is an eventQUEUE, and I queue all interactions
-						// with display, I see no Problem.
-						Client.this.display = new Display();
-						Client.this.display.setVisible(true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new RMISecurityManager());
+		}
+		
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// It *should* be safe to initialize the display at an
+					// unknow point in the future. As it is an eventQUEUE,
+					// and I queue all interactions
+					// with display, I see no Problem.
+					Client.this.display = new Display();
+					Client.this.display.setVisible(true);
+					Client.this.display.client = Client.this;
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			});
+			}
+		});
 
-			this.server = (IGameServer) Naming.lookup("rmi://" + url + ":" + port + "/" + "ServerStub");
+		try {
+
+			this.server = (IGameServer) Naming.lookup("rmi://" + url + ":" + port + "/" + "Server");
 
 			this.server.login(playerName, this);
 			Object[][] players = this.server.getPlayers();
@@ -77,6 +83,7 @@ public class Client implements IGameClient {
 			}
 		} catch (Exception e) {
 			System.out.println("Client failed, caught exception " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -100,7 +107,8 @@ public class Client implements IGameClient {
 
 	@Override
 	public void recievePlayerJoined(String playerName) throws RemoteException {
-		// I don't care if anything was there before, as the server should take care of it.
+		// I don't care if anything was there before, as the server should take
+		// care of it.
 		this.players.put(playerName, 0);
 		rebuildDisplay();
 	}
@@ -120,18 +128,19 @@ public class Client implements IGameClient {
 	}
 
 	private void rebuildDisplay() {
-		Set<Entry<String, Integer>> s = this.players.entrySet();
-		final LinkedList<Object[]> dummy = new LinkedList<>();
+		final Object[][] value = new Object[this.players.size()][2];
 
-		for (Entry<String, Integer> entry : s) {
-			dummy.add(new Object[] { entry.getKey(), entry.getValue().toString() });
+		int i = 0;
+		for (Entry<String, Integer> e : this.players.entrySet()) {
+			value[i++] = new Object[] { e.getKey(), e.getValue() };
 		}
+		
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
 				// I have no idea if this will work...
-				Client.this.display.updateTable((Object[][]) dummy.toArray());
+				Client.this.display.updateTable(value);
 			}
 		});
 	}
