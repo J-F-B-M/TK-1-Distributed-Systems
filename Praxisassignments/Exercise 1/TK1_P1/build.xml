@@ -5,21 +5,46 @@
 		TK1 - Programmieraufgabe 1
 	</description>
 
-    <target name="clean">
-    	<!--  -->   
-    </target>
+	<target name="clean">
+		<delete dir="build" />
+	</target>
 
-    <target name="compile">
-    	<!--  -->    
-    </target>
+	<target name="compile" depends="clean">
+		<mkdir dir="build/client" />
+		<javac srcdir="src/client" destdir="build/client" />
+		<javac srcdir="src/impl" destdir="build/client" />
 
-    <target name="jar">
-    	<!-- generate jars -->
-    </target>
+		<mkdir dir="build/server" />
+		<javac srcdir="src/server" destdir="build/server" />
+		<javac srcdir="src/impl" destdir="build/server" />
+	</target>
 
-    <target name="run">
-    	<parallel>
-    		<!-- start here one server and two clients -->
-    	</parallel>        
-    </target>
+	<target name="jar" depends="compile">
+		<jar destfile="build/jar/Client.jar" basedir="build/client">
+			<manifest>
+				<attribute name="Main-Class" value="client.Client" />
+			</manifest>
+		</jar>
+		<jar destfile="build/jar/Server.jar" basedir="build/server">
+			<manifest>
+				<attribute name="Main-Class" value="server.Server" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<parallel>
+			<java jar="build/jar/Server.jar" fork="true">
+				<arg line="-Djava.security.policy=./server.policy" />
+			</java>
+
+			<java jar="build/jar/Client.jar" fork="true">
+				<arg line="-Djava.security.policy=./client.policy Player1 localhost" />
+			</java>
+
+			<java jar="build/jar/Client.jar" fork="true">
+				<arg line="-Djava.security.policy=./client.policy Player2 localhost" />
+			</java>
+		</parallel>
+	</target>
 </project>
