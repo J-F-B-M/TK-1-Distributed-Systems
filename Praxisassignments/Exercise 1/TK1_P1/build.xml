@@ -33,15 +33,23 @@
 	</target>
 
 	<target name="run" depends="jar">
+		
+			<java jar="build/jar/Server.jar" fork="true">
+				<jvmarg line="-Djava.security.policy=./server.policy" />
+			</java>
+		
+		<!-- Give the server time to set up -->
+		<sleep seconds="2"/>
+		
 		<parallel>
-			<java jar="build/jar/Server.jar" Djava.security.policy="server.policy" fork="true" />
-
-			<java jar="build/jar/Client.jar" Djava.security.policy="client.policy" fork="true">
-				<arg line=" Player1 localhost" />
+			<java jar="build/jar/Client.jar" fork="true">
+				<jvmarg line="-Djava.security.policy=./client.policy" />
+				<arg line="Joachim&#13;&#10;localhost" />
 			</java>
 
-			<java jar="build/jar/Client.jar" Djava.security.policy="client.policy" fork="true">
-				<arg line=" Player1 localhost" />
+			<java jar="build/jar/Client.jar" fork="true">
+				<jvmarg line="-Djava.security.policy=./client.policy" />
+				<arg line="Felix&#13;&#10;localhost" />
 			</java>
 		</parallel>
 	</target>
