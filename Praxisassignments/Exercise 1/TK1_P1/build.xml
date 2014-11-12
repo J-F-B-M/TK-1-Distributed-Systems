@@ -34,16 +34,14 @@
 
 	<target name="run" depends="jar">
 		<parallel>
-			<java jar="build/jar/Server.jar" fork="true">
-				<arg line="-Djava.security.policy=./server.policy" />
+			<java jar="build/jar/Server.jar" Djava.security.policy="server.policy" fork="true" />
+
+			<java jar="build/jar/Client.jar" Djava.security.policy="client.policy" fork="true">
+				<arg line=" Player1 localhost" />
 			</java>
 
-			<java jar="build/jar/Client.jar" fork="true">
-				<arg line="-Djava.security.policy=./client.policy Player1 localhost" />
-			</java>
-
-			<java jar="build/jar/Client.jar" fork="true">
-				<arg line="-Djava.security.policy=./client.policy Player2 localhost" />
+			<java jar="build/jar/Client.jar" Djava.security.policy="client.policy" fork="true">
+				<arg line=" Player1 localhost" />
 			</java>
 		</parallel>
 	</target>
