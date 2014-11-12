@@ -11,12 +11,12 @@
 
 	<target name="compile" depends="clean">
 		<mkdir dir="build/client" />
-		<javac srcdir="src/client" destdir="build/client" />
 		<javac srcdir="src/impl" destdir="build/client" />
+		<javac srcdir="src/client" destdir="build/client" />
 
 		<mkdir dir="build/server" />
-		<javac srcdir="src/server" destdir="build/server" />
 		<javac srcdir="src/impl" destdir="build/server" />
+		<javac srcdir="src/server" destdir="build/server" />
 	</target>
 
 	<target name="jar" depends="compile">
